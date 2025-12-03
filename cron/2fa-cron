@@ -1,0 +1,1 @@
+* * * * * root /usr/local/bin/python /app/cron/log_totp.py >> /cron/last_code.txt 2>&1
