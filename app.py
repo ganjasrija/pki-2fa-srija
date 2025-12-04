@@ -6,6 +6,8 @@ from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from totp_utils import generate_totp_code, verify_totp_code
 
+
+
 app = FastAPI()
 SEED_FILE = "/data/seed.txt"
 PRIVATE_KEY_FILE = "student_private.pem"
