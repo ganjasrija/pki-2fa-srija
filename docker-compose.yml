@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   app:
@@ -9,8 +9,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - seed-data:/data
-      - cron-output:/cron
+      - seed-data:/data       # Correct - SEED stored here
+      - cron-output:/cron     # Correct - CRON logs stored here
       - ./student_private.pem:/app/student_private.pem:ro
       - ./student_public.pem:/app/student_public.pem:ro
       - ./instructor_public.pem:/app/instructor_public.pem:ro
@@ -21,3 +21,4 @@ services:
 volumes:
   seed-data:
   cron-output:
+
