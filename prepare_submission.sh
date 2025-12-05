@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # GitHub Repository URL
-GITHUB_URL="https://github.com/yourusername/pki-2fa"
+GITHUB_URL="https://github.com/ganjasrija/pki-2fa-srija.git"
 
 # Get the latest commit hash
 COMMIT_HASH=$(git log -1 --format=%H)
@@ -19,7 +19,7 @@ STUDENT_PUBLIC_KEY_API=$(awk '{printf "%s\\n", $0}' student_public.pem)
 ENCRYPTED_SEED=$(tr -d '\n' < encrypted_seed.txt)
 
 # Docker image URL (optional)
-DOCKER_IMAGE_URL="docker.io/yourusername/pki-2fa:latest"
+DOCKER_IMAGE_URL="docker.io/srijaganja/pki-2fa:latest"
 
 # Print submission info
 echo -e "GitHub Repository URL:\n$GITHUB_URL\n"
