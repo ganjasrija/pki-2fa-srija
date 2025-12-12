@@ -24,13 +24,21 @@ ENV PYTHONPATH=/app
 
 COPY . .
 
+# 🚨 CRITICAL FIX: Copy the private key file so the app.py can find it!
+# This resolves the HTTP 500 Decryption failed error caused by FileNotFoundError.
+COPY student_private.pem .
+# --------------------------------------------------------------------------
+
 RUN mkdir -p /data /cron && chmod 755 /data /cron
 
 COPY cron/2fa-cron /etc/cron.d/2fa-cron
-RUN chmod 0644 /etc/cron.d/2fa-cron \
+# CRITICAL FIX: Use tr to strip the carriage return (\r) character 
+# that causes crontab errors on Windows/CRLF environments.
+RUN tr -d '\r' < /etc/cron.d/2fa-cron > /etc/cron.d/2fa-cron.tmp \
+    && mv /etc/cron.d/2fa-cron.tmp /etc/cron.d/2fa-cron \
+    && chmod 0644 /etc/cron.d/2fa-cron \
     && crontab /etc/cron.d/2fa-cron
 
 EXPOSE 8080
 
 CMD ["sh", "-c", "cron && uvicorn app:app --host 0.0.0.0 --port 8080"]
-

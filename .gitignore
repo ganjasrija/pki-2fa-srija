@@ -11,3 +11,6 @@ __pycache__/
 # IDE/editor files
 .vscode/
 .idea/
+__pycache__
+encrypted_seed.txt
+/data/seed.txt

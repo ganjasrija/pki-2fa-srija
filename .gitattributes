@@ -1,1 +1,4 @@
 cron/2fa-cron text eol=lf
+encrypted_seed.txt binary
+student_private.pem binary
+*.py text eol=lf
