@@ -18,9 +18,13 @@ def generate_totp_code(hex_seed: str) -> str:
     return totp.now()
 
 
-def verify_totp_code(hex_seed: str, code: str, valid_window: int = 1) -> bool:
+def verify_totp_code(hex_seed: str, code: str, valid_window: int = 3) -> bool:
     """
-    Verify TOTP code with time window tolerance
+    Verify TOTP code with time window tolerance.
+    
+    The valid_window is set to 3 to account for clock drift, allowing
+    the verification to succeed within 3 time steps (90 seconds)
+    before or after the current time.
     """
     seed_bytes = bytes.fromhex(hex_seed)
     seed_base32 = base64.b32encode(seed_bytes).decode('utf-8')
