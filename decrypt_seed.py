@@ -1,6 +1,7 @@
 import base64
 import os
 import sys 
+import json # <-- NEW: Import JSON module
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
@@ -23,21 +24,33 @@ except Exception as e:
     print(f"FATAL ERROR: Failed to load private key: {e}. Exiting.")
     sys.exit(1)
 
-# --- SAFE ENCRYPTED SEED LOADING ---
+# --- SAFE ENCRYPTED SEED LOADING AND JSON PARSING (CRITICAL CHANGE) ---
 try:
     with open(ENCRYPTED_SEED_FILE, "r") as f:
-        encrypted_seed_b64 = f.read().strip()
+        # Load the entire content as a JSON object
+        response_data = json.load(f)
+        
+        # Extract the Base64-encoded seed string from the JSON
+        encrypted_seed_b64 = response_data['encrypted_seed'].strip()
+
 except FileNotFoundError:
     print(f"FATAL ERROR: Encrypted seed file not found at {ENCRYPTED_SEED_FILE}. Exiting.")
     sys.exit(1)
+except json.JSONDecodeError:
+    print("FATAL ERROR: Encrypted seed file is not valid JSON. Ensure you used the correct API call.")
+    sys.exit(1)
+except KeyError:
+    print("FATAL ERROR: JSON response is missing the 'encrypted_seed' key. Invalid API response.")
+    sys.exit(1)
 except Exception as e:
-    print(f"FATAL ERROR: Failed to read encrypted seed: {e}. Exiting.")
+    print(f"FATAL ERROR: Failed to read or parse encrypted seed: {e}. Exiting.")
     sys.exit(1)
 
 
 def decrypt_seed(encrypted_seed_b64: str, private_key) -> str:
     # 1. Base64 decode
-    encrypted_bytes = base64.b64decode(encrypted_seed_b64)
+    # Ensure the string is encoded to bytes for base64.b64decode
+    encrypted_bytes = base64.b64decode(encrypted_seed_b64) 
 
     # 2. Decrypt using RSA/OAEP with SHA-256
     decrypted_bytes = private_key.decrypt(
@@ -71,6 +84,7 @@ if __name__ == "__main__":
             f.write(hex_seed)
 
         print(f"✅ Seed decrypted and saved to {SEED_FILE}")
+        
     except Exception as e:
         print(f"FATAL DECRYPTION ERROR: {e}. Check key and encrypted seed integrity.")
         sys.exit(1)
