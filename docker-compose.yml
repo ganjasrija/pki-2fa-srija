@@ -9,9 +9,11 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      # CRITICAL FIX: Only map the persistent data volume /data
+      # 1. Volume for the decrypted seed
       - seed-data:/data
-      # The /cron volume is NOT needed, as both seed.txt and last_code.txt are in /data.
+      
+      # 2. CRITICAL: Volume for the cron job output
+      - cron-output:/cron  
       
       # Map required key files
       - ./student_private.pem:/app/student_private.pem:ro
@@ -23,5 +25,4 @@ services:
 
 volumes:
   seed-data:
-# CRITICAL FIX: Only define the volume needed for persistence
-# cron-output volume is no longer needed
+  cron-output:
